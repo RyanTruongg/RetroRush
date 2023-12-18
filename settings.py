@@ -1,9 +1,8 @@
 import utils
 
-LEVEL_MAP = utils.read_level_map_data(1)
 TILE_SIZE = 64
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 CENTER_X = SCREEN_WIDTH // 2
 CENTER_Y = SCREEN_HEIGHT // 2
-DEBUG = True
+DEBUG = False

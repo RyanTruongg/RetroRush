@@ -10,7 +10,7 @@ clock = pygame.time.Clock()
 
 from level import Level
 
-level = Level(level_map=settings.LEVEL_MAP)
+level = Level(1)
 
 while True:
     for event in pygame.event.get():

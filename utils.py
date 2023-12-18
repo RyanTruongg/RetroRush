@@ -1,20 +1,12 @@
 import os
 import pygame
 import json
-
-
-def bulk_import(path: str):
-    surfs: list[pygame.Surface] = []
-    for _, __, files in os.walk(path):
-        for file in files:
-            surfs.append(pygame.image.load(path + '/' + file))
-
-    return surfs
+import settings
 
 
 def split_from(path: str, width: int, scaleFactor: int = 1):
     surfs: list[pygame.Surface] = []
-    origin = pygame.image.load(path)
+    origin = pygame.image.load(path).convert_alpha()
     rect = origin.get_rect()
     rect.width = width
     for i in range(origin.get_width() // width):
@@ -50,20 +42,39 @@ def create_tiles_set(path: str, size: tuple[int, int], scaleFactor: int):
     return surfs
 
 
-def read_level_map_data(level: int):
-    map_path = f'levels/level_{level}/map.tmj'
-    f = open(map_path, "r")
-    map_data = json.load(f)
-
-    layer = map_data['layers'][0]
-    width = layer['width']
-    height = layer['height']
-
-    layer_data = layer['data']
-    layer2d = []
-    for r in range(height):
+def convert_to_2d_tiled_map(arr: list, rows: int, cols: int):
+    _2d_arrays = []
+    for cur_row in range(rows):
         row = []
-        for c in range(width):
-            row.append(layer_data[r * width + c] - 1)
-        layer2d.append(row)
-    return layer2d
+        for cur_col in range(cols):
+            row.append(arr[cur_row * cols + cur_col] - 1)
+        _2d_arrays.append(row)
+    return _2d_arrays
+
+
+class LevelData():
+
+    def __init__(self, level_number: int) -> None:
+        map_path = f'levels/level_{level_number}/map.tmj'
+        f = open(map_path, "r")
+        map_data = json.load(f)
+        f.close()
+
+        self.cols = int(map_data['width'])
+        self.rows = int(map_data['height'])
+
+        ground_layer = list(
+            filter(lambda x: x['name'] == 'ground', map_data['layers']))[0]
+        self.ground_layer_2d = convert_to_2d_tiled_map(ground_layer['data'],
+                                                       self.rows, self.cols)
+
+        player_layer = list(
+            filter(lambda x: x['name'] == 'player', map_data['layers']))[0]
+        self.player_layer_2d = convert_to_2d_tiled_map(player_layer['data'],
+                                                       self.rows, self.cols)
+
+    def get_screen_width(self):
+        return self.cols * settings.TILE_SIZE
+
+    def get_screen_height(self):
+        return self.rows * settings.TILE_SIZE

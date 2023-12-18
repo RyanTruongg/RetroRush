@@ -92,17 +92,18 @@ class Player(pygame.sprite.Sprite):
             return Player.A_IDLE
 
     def update_animation(self):
-        self.rect = self.image.get_rect(center=self.hit_box_rect.center)
         self.animation_idx += self.animation_speed
         current_animation_frames = Player.ANIMATIONS[
             self.get_animation_status()]
         if int(self.animation_idx) >= len(current_animation_frames):
             self.animation_idx = 0
             self.animation_done()
+            self.rect = self.image.get_rect(center=self.hit_box_rect.center)
             return
         frame = current_animation_frames[int(self.animation_idx)]
         self.image = pygame.transform.flip(frame, True,
                                            False) if self.flip_image else frame
+        self.rect = self.image.get_rect(center=self.hit_box_rect.center)
 
     def animation_done(self):
         if self.sword_attacking:
