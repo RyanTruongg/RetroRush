@@ -1,6 +1,6 @@
 import os
-
 import pygame
+import json
 
 
 def bulk_import(path: str):
@@ -35,7 +35,7 @@ def create_tiles_set(path: str, size: tuple[int, int], scaleFactor: int):
     tile_height = size[1]
 
     surfs = []
-    origin = pygame.image.load(path)
+    origin = pygame.image.load(path).convert()
     sized_rect = origin.get_rect()
     sized_rect.width = tile_width
     sized_rect.height = tile_height
@@ -48,3 +48,22 @@ def create_tiles_set(path: str, size: tuple[int, int], scaleFactor: int):
             surfs.append(tile_rect)
     surfs = list(scale_all_by(surfs, scaleFactor))
     return surfs
+
+
+def read_level_map_data(level: int):
+    map_path = f'levels/level_{level}/map.tmj'
+    f = open(map_path, "r")
+    map_data = json.load(f)
+
+    layer = map_data['layers'][0]
+    width = layer['width']
+    height = layer['height']
+
+    layer_data = layer['data']
+    layer2d = []
+    for r in range(height):
+        row = []
+        for c in range(width):
+            row.append(layer_data[r * width + c] - 1)
+        layer2d.append(row)
+    return layer2d

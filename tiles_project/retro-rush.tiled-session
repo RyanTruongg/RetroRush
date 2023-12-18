@@ -1,0 +1,80 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1/map.tmj",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1.tmx": {
+            "scale": 0.8134374999999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 603.611217825586,
+                "y": 514.483288513254
+            }
+        },
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1/level_1.tmx": {
+            "scale": 0.8134374999999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 606.069919323857,
+                "y": 507.1071840184402
+            }
+        },
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1/map.json": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 539,
+                "y": 318.5
+            }
+        },
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1/map.tmj": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 420,
+                "y": 299.5
+            }
+        },
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1/tiles_set.tsj": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1/tiles_set.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/tiles_project/tiles_set.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/tiles_set.tsx": {
+            "scaleInDock": 1
+        },
+        "tiles_set.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1",
+    "last.imagePath": "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/graphics/tiles",
+    "map.lastUsedExportFilter": "All Files (*)",
+    "map.lastUsedFormat": "json",
+    "openFiles": [
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1/map.tmj"
+    ],
+    "project": "",
+    "recentFiles": [
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1/map.tmj",
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1/tiles_set.tsj",
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1/map.json",
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1/tiles_set.tsx",
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1/level_1.tmx",
+        "tiles_set.tsx",
+        "C:/Users/Admin/OneDrive/Desktop/Games/Platformer/levels/level_1.tmx"
+    ],
+    "tileset.lastUsedFormat": "json"
+}

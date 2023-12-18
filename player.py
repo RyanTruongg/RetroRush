@@ -1,7 +1,5 @@
-import os
 import pygame
 import utils
-import settings
 
 
 class Effect(pygame.sprite.Sprite):
@@ -51,9 +49,8 @@ class Player(pygame.sprite.Sprite):
                          2),
     }
 
-    def __init__(self, position: tuple[int], display: pygame.Surface) -> None:
+    def __init__(self, position: tuple[int]) -> None:
         super().__init__()
-        self.display = display
         self.effects_group = pygame.sprite.Group()
 
         self.direction = pygame.math.Vector2()
@@ -95,6 +92,7 @@ class Player(pygame.sprite.Sprite):
             return Player.A_IDLE
 
     def update_animation(self):
+        self.rect = self.image.get_rect(center=self.hit_box_rect.center)
         self.animation_idx += self.animation_speed
         current_animation_frames = Player.ANIMATIONS[
             self.get_animation_status()]
@@ -103,10 +101,8 @@ class Player(pygame.sprite.Sprite):
             self.animation_done()
             return
         frame = current_animation_frames[int(self.animation_idx)]
-
         self.image = pygame.transform.flip(frame, True,
                                            False) if self.flip_image else frame
-        self.rect = self.image.get_rect(center=self.hit_box_rect.center)
 
     def animation_done(self):
         if self.sword_attacking:
@@ -170,19 +166,3 @@ class Player(pygame.sprite.Sprite):
         self.update_action()
         self.update_movement(sprites)
         self.update_animation()
-        self.effects_group.draw(self.display)
-        self.effects_group.update()
-
-        if settings.DEBUG:
-            pygame.draw.rect(
-                self.display,
-                'Red',
-                self.rect,
-                width=1,
-            )
-            pygame.draw.rect(
-                self.display,
-                'Green',
-                self.hit_box_rect,
-                width=1,
-            )

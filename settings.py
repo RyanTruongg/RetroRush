@@ -1,17 +1,9 @@
-import csv
+import utils
 
-
-def load_csv(file_path):
-    data = []
-    with open(file_path, 'r') as file:
-        csv_reader = csv.reader(file)
-        for row in csv_reader:
-            data.append(row)
-    return data
-
-
-LEVEL_MAP = load_csv('levels\\level_1_ground.csv')
+LEVEL_MAP = utils.read_level_map_data(1)
 TILE_SIZE = 64
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
+CENTER_X = SCREEN_WIDTH // 2
+CENTER_Y = SCREEN_HEIGHT // 2
 DEBUG = True
