@@ -70,7 +70,7 @@ class LevelData():
 
         player_layer = list(
             filter(lambda x: x['name'] == 'player', map_data['layers']))[0]
-        self.player_layer_2d = convert_to_2d_tiled_map(player_layer['data'],
+        self.entity_layer_2d = convert_to_2d_tiled_map(player_layer['data'],
                                                        self.rows, self.cols)
 
     def get_screen_width(self):

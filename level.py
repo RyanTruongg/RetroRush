@@ -3,6 +3,7 @@ import settings
 import utils
 from tile import Tile
 from player import Player
+import enemy
 
 
 class Level(pygame.sprite.Sprite):
@@ -16,6 +17,7 @@ class Level(pygame.sprite.Sprite):
              self.level_data.get_screen_height()))
 
         self.tiles_group = pygame.sprite.Group()
+        self.enemy_group = pygame.sprite.Group()
         self.player_group = pygame.sprite.GroupSingle()
 
         for r in range(self.level_data.rows):
@@ -25,8 +27,10 @@ class Level(pygame.sprite.Sprite):
                 tile_id = int(self.level_data.ground_layer_2d[r][c])
                 self.tiles_group.add(Tile((screenx, screeny), tile_id))
 
-                if int(self.level_data.player_layer_2d[r][c]) == 15:
+                if int(self.level_data.entity_layer_2d[r][c]) == 15:
                     self.player_group.add(Player((screenx, screeny)))
+                if int(self.level_data.entity_layer_2d[r][c]) == 16:
+                    self.enemy_group.add(enemy.Enemy((screenx, screeny)))
 
         self.offsety = settings.CENTER_Y - self.player_group.sprite.hit_box_rect.y
 
@@ -39,7 +43,10 @@ class Level(pygame.sprite.Sprite):
         self.tiles_group.update()
         self.tiles_group.draw(self.level_surf)
 
-        self.player_group.update(sprites=self.tiles_group.sprites())
+        self.enemy_group.update(collidable_sprites=self.tiles_group.sprites())
+        self.enemy_group.draw(self.level_surf)
+
+        self.player_group.update(collidable_sprites=self.tiles_group.sprites())
         self.player_group.draw(self.level_surf)
 
         if settings.DEBUG:

@@ -1,10 +1,15 @@
 import pygame
+import entity
 
 
-class Enemy(pygame.sprite.Sprite):
+class Enemy(entity.Entity):
 
-    def __init__(self, location: tuple[int, int]) -> None:
-        super().__init__()
-        self.image = pygame.Surface(32, 64)
+    def __init__(self, position: tuple[int, int]) -> None:
+        super().__init__(position)
+        self.image = pygame.Surface((32, 64))
         self.image.fill('Red')
-        self.rect = self.image.get_rect(center=location)
+        self.rect = self.image.get_rect(center=position)
+
+    def update(self, collidable_sprites: list[pygame.sprite.Sprite]) -> None:
+        super().update(collidable_sprites)
+        self.rect = self.image.get_rect(center=self.hit_box_rect.center)
