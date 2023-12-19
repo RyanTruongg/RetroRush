@@ -41,12 +41,12 @@ class Level(pygame.sprite.Sprite):
         self.level_surf.fill('Black')
 
         self.tiles_group.update()
-        self.tiles_group.draw(self.level_surf)
-
+        self.player_group.update(collidable_sprites=self.tiles_group.sprites(),
+                                 enemy_sprites=self.enemy_group.sprites())
         self.enemy_group.update(collidable_sprites=self.tiles_group.sprites())
-        self.enemy_group.draw(self.level_surf)
 
-        self.player_group.update(collidable_sprites=self.tiles_group.sprites())
+        self.tiles_group.draw(self.level_surf)
+        self.enemy_group.draw(self.level_surf)
         self.player_group.draw(self.level_surf)
 
         if settings.DEBUG:
@@ -60,6 +60,12 @@ class Level(pygame.sprite.Sprite):
                 self.level_surf,
                 'Green',
                 self.player_group.sprite.hit_box_rect,
+                width=1,
+            )
+            pygame.draw.rect(
+                self.level_surf,
+                'Blue',
+                self.player_group.sprite.attack_hit_box_rect,
                 width=1,
             )
 

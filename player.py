@@ -1,4 +1,5 @@
 import pygame
+from enemy import Enemy
 import utils
 import entity
 
@@ -22,7 +23,7 @@ class Effect(pygame.sprite.Sprite):
 
 
 class Player(entity.Entity):
-    jump_frames = utils.split_from('graphics\\character\\jump_48.png', 48, 2)
+    jump_frames = utils.split_from('graphics/character/jump_48.png', 48, 2)
     A_RUN = 'run'
     A_SWORD_RUN = 'sword_run'
     A_JUMP = 'jump'
@@ -31,22 +32,21 @@ class Player(entity.Entity):
     A_SWORD_IDLE = 'sword_idle'
     A_FALL = 'fall'
     A_SWORD_ATTACK = 'sword_attack'
+
     ANIMATIONS = {
         A_IDLE:
-        utils.split_from('graphics\\character\\idle_48.png', 48, 2),
+        utils.split_from('graphics/character/idle_48.png', 48, 2),
         A_SWORD_IDLE:
-        utils.split_from('graphics\\character\\sword\\sword_idle_48.png', 48,
-                         2),
+        utils.split_from('graphics/character/sword/sword_idle_48.png', 48, 2),
         A_RUN:
-        utils.split_from('graphics\\character\\run_48.png', 48, 2),
+        utils.split_from('graphics/character/run_48.png', 48, 2),
         A_SWORD_RUN:
-        utils.split_from('graphics\\character\\sword\\sword_run_48.png', 48,
-                         2),
+        utils.split_from('graphics/character/sword/sword_run_48.png', 48, 2),
         A_JUMP: [jump_frames[0]],
         A_JUMP_MAX: [jump_frames[1]],
         A_FALL: [jump_frames[2]],
         A_SWORD_ATTACK:
-        utils.split_from('graphics\\character\\sword\\sword_attack_64.png', 64,
+        utils.split_from('graphics/character/sword/sword_attack_64.png', 64,
                          2),
     }
 
@@ -54,22 +54,25 @@ class Player(entity.Entity):
         super().__init__(position)
         self.effects_group = pygame.sprite.Group()
 
-        self.speed = 5
+        self.base_speed = 5
+        self.speed = self.base_speed
 
-        self.animation_idx = 0
-        self.animation_speed = 0.2
-        self.flip_image = False
         self.has_sword = True
-        self.sword_attacking = False
+        self.attacking = False
 
         self.image = Player.ANIMATIONS[self.get_animation_status()][0]
-
         self.rect = self.hit_box_rect.copy()
+        self.attack_hit_box_rect = self.hit_box_rect.copy()
+        self.attack_hit_box_rect.width = 48
+
+    def get_animations(self):
+        return Player.ANIMATIONS
 
     def get_animation_status(self):
-        if self.sword_attacking:
-            self.animation_speed = 0.4
-            return Player.A_SWORD_ATTACK
+        if self.attacking:
+            if self.has_sword:
+                self.animation_speed = 0.4
+                return Player.A_SWORD_ATTACK
         if self.direction.y < 0:
             return Player.A_JUMP
         if self.direction.y > 0:
@@ -87,35 +90,41 @@ class Player(entity.Entity):
         else:
             return Player.A_IDLE
 
-    def update_animation(self):
-        self.animation_idx += self.animation_speed
-        current_animation_frames = Player.ANIMATIONS[
-            self.get_animation_status()]
-        if int(self.animation_idx) >= len(current_animation_frames):
-            self.animation_idx = 0
-            self.animation_done()
-            return
-        frame = current_animation_frames[int(self.animation_idx)]
-        self.image = pygame.transform.flip(frame, True,
-                                           False) if self.flip_image else frame
-
     def animation_done(self):
-        if self.sword_attacking:
-            self.sword_attacking = False
+        if self.attacking:
+            self.attacking = False
+            self.speed = self.base_speed
 
-    def update_action(self):
-        if pygame.mouse.get_pressed()[0] and self.sword_attacking == False:
+    def update_animation(self):
+        super().update_animation()
+        if self.facing_left:
+            self.attack_hit_box_rect.right = self.hit_box_rect.left
+        else:
+            self.attack_hit_box_rect.left = self.hit_box_rect.right
+        self.attack_hit_box_rect.bottom = self.hit_box_rect.bottom
+
+    def handle_attack(self, enemy_sprites: list[Enemy]):
+        if pygame.mouse.get_pressed(
+        )[0] and self.attacking == False and self.on_ground:
             self.animation_idx = 0
-            self.sword_attacking = True
+            self.attacking = True
+            self.speed = 0
+
+        if self.attacking and int(self.animation_idx) == 2:
+            for enemy in enemy_sprites:
+                if self.attack_hit_box_rect.colliderect(enemy.hit_box_rect):
+                    enemy.on_attacked()
 
     def update_horizontal_movement(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
             self.direction.x = 1
-            self.flip_image = False
+            if self.attacking != True:
+                self.facing_left = False
         elif keys[pygame.K_a]:
             self.direction.x = -1
-            self.flip_image = True
+            if self.attacking != True:
+                self.facing_left = True
         else:
             self.direction.x = 0
 
@@ -128,25 +137,10 @@ class Player(entity.Entity):
         else:
             self.gravity = self.base_gravity
 
-        self.apply_gravity()
+        super().update_vertical_movement()
 
-    def update_movement(self, collidable_sprites: list[pygame.sprite.Sprite]):
-        self.update_horizontal_movement()
-        sprite: pygame.sprite.Sprite
-        # Handle horizontal collision
-        for sprite in collidable_sprites:
-            if self.hit_box_rect.colliderect(sprite) and sprite.colliable:
-                if self.direction.x > 0:
-                    self.hit_box_rect.right = sprite.rect.left
-                elif self.direction.x < 0:
-                    self.hit_box_rect.left = sprite.rect.right
-
-        self.update_vertical_movement()
-        # Handle vertical collision
-        self.handle_vertical_collision(collidable_sprites)
-
-    def update(self, collidable_sprites: list[pygame.sprite.Sprite]):
-        self.update_action()
-        self.update_movement(collidable_sprites)
-        self.update_animation()
+    def update(self, collidable_sprites: list[pygame.sprite.Sprite],
+               enemy_sprites: list[Enemy]):
+        super().update(collidable_sprites)
+        self.handle_attack(enemy_sprites)
         self.rect = self.image.get_rect(center=self.hit_box_rect.center)
